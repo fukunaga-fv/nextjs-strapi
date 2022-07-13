@@ -13,7 +13,7 @@ class MyApp extends App {
 				<Head>
 					<link 
 						rel="stylesheet" 
-						href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
+						href="http://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
 					/>
 				</Head>
 				<Layout>
