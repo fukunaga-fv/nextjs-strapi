@@ -4,6 +4,7 @@ import Head from "next/head"; //メタ情報コンポ
 import Layout from "../components/Layout";
 import withData from "../lib/apollo";
 import AppContext from "../context/AppContext";
+import Cookies from "js-cookie";
 
 class MyApp extends App {
   // クラスコンポはuseStateが使えないらしいk
@@ -15,6 +16,28 @@ class MyApp extends App {
   setUser = (user) => {
     this.setState({ user });
   };
+
+  //既にユーザー情報が残っているかを確認する。
+  componentDidMount() {
+    const token = Cookies.get("token"); //tokenの中にはjwtが入っている
+
+    if (token) {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then(async (res) => {
+        if (!res.ok) {
+          //resは帰ってくるがokでは無い場合、期限切れなどで
+          Cookies.remove("token"); //古いクッキー削除
+          this.setState({ user: null }); //ユーザーセットをnull
+          return null;
+        }
+        const user = await res.json(); //okな場合resをJSONに変換
+        this.setUser(user); //ログイン
+      });
+    }
+  }
 
   render() {
     //OR

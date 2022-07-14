@@ -37,7 +37,7 @@ const Layout = (props) => {
                 <a
                   className="nav-link"
                   onClick={() => {
-                    serUser(null);
+                    setUser(null);
                   }}
                 >
                   ログアウト
