@@ -11,6 +11,7 @@ class MyApp extends App {
   // setStateはstateが更新されると再レンダーする
   state = {
     user: null,
+    cart: { items: [], total: 0 },
   };
 
   setUser = (user) => {
@@ -20,6 +21,20 @@ class MyApp extends App {
   //既にユーザー情報が残っているかを確認する。
   componentDidMount() {
     const token = Cookies.get("token"); //tokenの中にはjwtが入っている
+    const cart = Cookies.get("cart");
+
+    // console.log(cart);
+
+    if (cart !== "undefinde") {
+      JSON.parse(cart).forEach((item) => {
+        this.setState({
+          cart: {
+            items: JSON.parse(cart),
+            total: (this.state.cart.total += item.price * item.quantity),
+          },
+        });
+      });
+    }
 
     if (token) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
@@ -39,16 +54,96 @@ class MyApp extends App {
     }
   }
 
+  addItem = (item) => {
+    let { items } = this.state.cart;
+    const newItem = items.find((i) => i.id === item.id);
+    console.log(newItem);
+    if (!newItem) {
+      item.quantity = 1;
+      //cartに追加する
+      this.setState(
+        {
+          cart: {
+            items: [...items, item], //今まで入っていたアイテムに対してitemを追加する
+            total: this.state.cart.total + item.price,
+          },
+        },
+        () => Cookies.set("cart", this.state.cart.items)
+      );
+    }
+    //既に同じ商品がカートに入っている時
+    else {
+      this.setState(
+        {
+          //Object.assign:既存の配列などに新しいフィールドを追加したい時など
+          cart: {
+            //quantityフィールド　← item.quantityに1プラスした値を代入して、itemに格納
+            items: this.state.cart.items.map((item) =>
+              item.id === newItem.id
+                ? Object.assign({}, item, { quantity: item.quantity + 1 })
+                : item
+            ),
+            total: this.state.cart.total + item.price,
+          },
+        },
+        () => Cookies.set("cart", this.state.cart.items)
+      );
+    }
+  };
+
+  //カートから商品を削除
+  removeItem = (item) => {
+    let { items } = this.state.cart;
+    const newItem = items.find((i) => i.id === item.id);
+    if (newItem.quantity > 1) {
+      this.setState(
+        {
+          cart: {
+            items: this.state.cart.items.map((item) =>
+              item.id === newItem.id
+                ? Object.assign({}, item, { quantity: item.quantity - 1 })
+                : item
+            ),
+            total: this.state.cart.total - item.price,
+          },
+        },
+        () => Cookies.set("cart", this.state.cart.items)
+      );
+    }
+    //カートに入っているその商品が一つの場合
+    else {
+      const items = [...this.state.cart.items];
+      const index = items.findIndex((i) => i.id === newItem.id); //インデックス；配列の添字番号を返す
+
+      items.splice(index, 1); //指定した添字番号を削除する、、引数が三つの場合追加する
+
+      this.setState(
+        {
+          cart: {
+            items: items,
+            total: this.state.cart.total - item.price,
+          },
+        },
+        () => Cookies.set("cart", this.state.cart.items)
+      );
+    }
+  };
+
   render() {
     //OR
     const { Component, pageProps } = this.props;
     return (
       //user: は条件分岐
       <AppContext.Provider
-        value={{ user: this.state.user, setUser: this.setUser }}
+        value={{
+          user: this.state.user,
+          cart: this.state.cart,
+          setUser: this.setUser,
+          addItem: this.addItem,
+          removeItem: this.removeItem,
+        }}
       >
         <>
-          {/* タイトル属性を決めたりリンクを決めたりメタ情報を含む */}
           <Head>
             <link
               rel="stylesheet"
