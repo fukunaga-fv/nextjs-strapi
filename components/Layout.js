@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import App, { Container } from "next/app"; //継承用
 import Head from "next/head"; //メタ情報コンポ
 import { Nav, NavItem } from "reactstrap";
 import Link from "next/link";
+import AppContext from "../context/AppContext";
 
 const Layout = (props) => {
+  const { user, setUser } = useContext(AppContext);
+  console.log(user);
   return (
     <div>
       <Head>
@@ -29,14 +32,31 @@ const Layout = (props) => {
             </Link>
           </NavItem>
           <NavItem className="ml-auto">
-            <Link href="/login">
-              <a className="nav-link">サインイン</a>
-            </Link>
+            {user ? (
+              <Link href="/">
+                <a
+                  className="nav-link"
+                  onClick={() => {
+                    serUser(null);
+                  }}
+                >
+                  ログアウト
+                </a>
+              </Link>
+            ) : (
+              <Link href="/login">
+                <a className="nav-link">ログイン</a>
+              </Link>
+            )}
           </NavItem>
-          <NavItem className="ml-auto">
-            <Link href="/register">
-              <a className="nav-link">サインアップ</a>
-            </Link>
+          <NavItem>
+            {user ? (
+              <h5>{user.username}</h5>
+            ) : (
+              <Link href="/register">
+                <a className="nav-link">新規登録</a>
+              </Link>
+            )}
           </NavItem>
         </Nav>
       </header>
