@@ -21,7 +21,7 @@ const register = () => {
     // console.log("hoge");
     registerUser(data.username, data.email, data.password)
       .then((res) => {
-        appContext.setUser({ ...data }); //promise構文で受け取れるかもー＞res.data.user
+        appContext.setUser(res.data.user); //promise構文で受け取れるかもー＞res.data.user
       })
       .catch((err) => console.log(err));
   };

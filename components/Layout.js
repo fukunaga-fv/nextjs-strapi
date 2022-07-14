@@ -7,7 +7,7 @@ import AppContext from "../context/AppContext";
 
 const Layout = (props) => {
   const { user, setUser } = useContext(AppContext);
-  console.log(user);
+  // console.log(user);
   return (
     <div>
       <Head>
