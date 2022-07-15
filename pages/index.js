@@ -20,6 +20,8 @@ const index = () => {
               />
             </InputGroup>
           </div>
+
+          {/* コンポ：レストランリスト */}
           <RestaurantsList search={query} />
         </Col>
       </Row>
