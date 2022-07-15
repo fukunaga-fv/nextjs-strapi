@@ -10,6 +10,8 @@ const CheckOutForm = () => {
     address: "",
     stripe_id: "",
   });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const elements = useElements();
   const stripe = useStripe();
@@ -27,7 +29,7 @@ const CheckOutForm = () => {
   const submitOrder = async () => {
     //stripeドキュメントに記載されているクレジット用tokenの作成
     const cardElement = elements.getElement(CardElement);
-    const token = await stripe.createToken(cardElement);
+    const tokenOBJ = await stripe.createToken(cardElement);
 
     //APIに対してPOSTメソッドを実行したい時
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
@@ -39,9 +41,15 @@ const CheckOutForm = () => {
         amount: Number(appContext.cart.total),
         dishes: appContext.cart.items,
         address: data.address,
-        token: token.token.id,
+        token: tokenOBJ.token.id,
       }),
     });
+
+    if (response.ok) {
+      setSuccess("成功や");
+    } else {
+      setError("失敗や");
+    }
   };
 
   return (
@@ -51,11 +59,15 @@ const CheckOutForm = () => {
       <FormGroup>
         <div>
           <Label>住所</Label>
-          <Input name="address" onChange={(e) => handleChange()} />
+          <Input name="address" onChange={(e) => handleChange(e)} />
         </div>
       </FormGroup>
 
-      <CardSection />
+      <CardSection
+        submitOrder={submitOrder}
+        errorMsg={error}
+        successMsg={success}
+      />
 
       <style jsx global>
         {`

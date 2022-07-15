@@ -1,6 +1,6 @@
 import { CardElement } from "@stripe/react-stripe-js";
 
-const CardSection = () => {
+const CardSection = (props) => {
   return (
     <div>
       <div>
@@ -14,8 +14,10 @@ const CardSection = () => {
               </div>
               <br />
               <div className="order-button-wrapper">
-                <button>注文を確認</button>
+                <button onClick={props.submitOrder}>注文を確認</button>
               </div>
+              {props.errorMsg ? <div>{props.errorMsg}</div> : null}
+              {props.successMsg ? <div>{props.successMsg}</div> : null}
             </div>
           </fieldset>
         </div>
