@@ -10,9 +10,9 @@ const CheckOutForm = () => {
     address: "",
     stripe_id: "",
   });
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
   const elements = useElements();
   const stripe = useStripe();
 
@@ -29,7 +29,7 @@ const CheckOutForm = () => {
   const submitOrder = async () => {
     //stripeドキュメントに記載されているクレジット用tokenの作成
     const cardElement = elements.getElement(CardElement);
-    const tokenOBJ = await stripe.createToken(cardElement);
+    const token = await stripe.createToken(cardElement);
 
     //APIに対してPOSTメソッドを実行したい時
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
@@ -41,12 +41,13 @@ const CheckOutForm = () => {
         amount: Number(appContext.cart.total),
         dishes: appContext.cart.items,
         address: data.address,
-        token: tokenOBJ.token.id,
+        token: token.token.id,
       }),
     });
 
     if (response.ok) {
       setSuccess("成功や");
+      console.log(appContext.cart.items);
     } else {
       setError("失敗や");
     }

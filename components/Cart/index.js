@@ -6,7 +6,7 @@ import AppContext from "../../context/AppContext";
 const Cart = () => {
   const appContext = useContext(AppContext);
 
-  //分割代入：https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+  //分割代入
   const { cart } = appContext; //グロバルコンテキストから取ってきた関数のcartだけと取り出す分割代入
   return (
     <div>

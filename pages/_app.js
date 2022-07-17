@@ -6,9 +6,9 @@ import withData from "../lib/apollo";
 import AppContext from "../context/AppContext";
 import Cookies from "js-cookie";
 
+// クラスコンポはreact Hookが使えない
 class MyApp extends App {
-  // クラスコンポはuseStateが使えないらしいk
-  // setStateはstateが更新されると再レンダーする
+  // setState->state が更新されると、コンポーネントはそれに再レンダーで応じます。
   state = {
     user: null,
     cart: { items: [], total: 0 },
@@ -25,7 +25,7 @@ class MyApp extends App {
 
     // console.log(cart);
 
-    if (cart !== "undefinde" && typeof cart === "string") {
+    if (cart !== "undefined" && typeof cart === "string") {
       //cartがstring型
       JSON.parse(cart).forEach((item) => {
         this.setState({
@@ -55,10 +55,11 @@ class MyApp extends App {
     }
   }
 
+  //現在のカートに商品を追加したい時
   addItem = (item) => {
     let { items } = this.state.cart;
     const newItem = items.find((i) => i.id === item.id);
-    console.log(newItem);
+    // console.log(newItem);
     if (!newItem) {
       item.quantity = 1;
       //cartに追加する

@@ -20,6 +20,7 @@ const RestaurantsList = (props) => {
   const { loading, error, data } = useQuery(query);
 
   if (loading === true) {
+    //loadingを待たないとdataが格納される前に処理が始まる場合がある
     return <span>Loading...</span>;
   }
   if (error) {

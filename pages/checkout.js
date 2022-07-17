@@ -17,6 +17,7 @@ const checkout = () => {
         <Cart />
       </Col>
       <Col style={{ paddingLeft: 5 }} sm={{ size: 6, order: 2 }}>
+        {/* stripeパッケージElementsにkeyを渡す */}
         <Elements stripe={stripePromise}>
           <CheckOutForm />
         </Elements>
