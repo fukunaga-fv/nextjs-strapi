@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import App, { Container } from "next/app"; //継承用
-import Head from "next/head"; //メタ情報コンポ
+import Head from "next/head"; //メタ情報コンポhpge
 import { Nav, NavItem } from "reactstrap";
 import Link from "next/link";
 import AppContext from "../context/AppContext";
